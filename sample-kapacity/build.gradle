@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.stuforbes.kapacity:kapacity-gradle-plugin:1.0-SNAPSHOT'
+    }
+}
+
+plugins {
+    id 'kotlin'
+}
+
+apply plugin: 'com.stuforbes.kapacity'
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.2.51"
+
+    implementation "org.apache.kafka:kafka-clients:2.4.0"
+
+    implementation project(":core")
+
+    implementation "org.slf4j:slf4j-api:1.7.25"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "ch.qos.logback:logback-core:1.2.3"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+kapacity {
+    duration = 20000
+    dataLoader = "com.stuforbes.kapacity.sample.data.SampleDataLoader"
+    timeSeriesDataSorter = "com.stuforbes.kapacity.sample.data.SampleTimeSeriesDataSorter"
+    dataPoster = "com.stuforbes.kapacity.sample.data.KafkaDataPosterImpl"
+    flightRecorder = "com.stuforbes.kapacity.sample.recorder.PrometheusFlightRecorderImpl"
+    resultFormatter = "com.stuforbes.kapacity.recorder.prometheus.PrometheusResultFormatter"
+}

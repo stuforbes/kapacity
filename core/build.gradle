@@ -1,0 +1,72 @@
+buildscript {
+
+    ext {
+        kotlinVersion = "1.3.61"
+        koHttpVersion = "0.11.1"
+        konfigVersion = "1.6.10.0"
+        commonsCliVersion = "1.4"
+
+        jacksonVersion = "2.9.7"
+        kafkaClientVersion = "2.4.0"
+
+        slf4jVersion = "1.7.25"
+        logbackVersion = "1.2.3"
+
+        junitVersion = "5.6.0"
+        mockkVersion = "1.9"
+        assertJVersion = "3.11.1"
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
+
+plugins {
+    id 'kotlin'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+
+    implementation "io.github.rybalkinsd:kohttp:$koHttpVersion"
+    implementation "com.natpryce:konfig:$konfigVersion"
+    implementation "commons-cli:commons-cli:$commonsCliVersion"
+
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
+    implementation "org.apache.kafka:kafka-clients:$kafkaClientVersion"
+
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    implementation "ch.qos.logback:logback-classic:$logbackVersion"
+    implementation "ch.qos.logback:logback-core:$logbackVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
