@@ -9,11 +9,15 @@
  */
 
 buildscript {
+    ext.ktor_version = '1.2.4'
+    ext.micrometer_version = '1.1.3'
+
     repositories {
-        mavenLocal()
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'com.stuforbes.kapacity:kapacity-gradle-plugin:1.0-SNAPSHOT'
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
     }
 }
 
@@ -21,19 +25,40 @@ plugins {
     id 'kotlin'
 }
 
-apply plugin: 'com.stuforbes.kapacity'
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'application'
+
+mainClassName = 'io.ktor.server.netty.EngineMain'
+
+shadowJar {
+    baseName = 'sample-application'
+    classifier = null
+    version = null
+}
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.2.51"
 
-    implementation "org.apache.kafka:kafka-clients:2.4.0"
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation "io.ktor:ktor-metrics-micrometer:$ktor_version"
+    implementation "io.micrometer:micrometer-registry-prometheus:$micrometer_version"
 
-    implementation project(":core")
+    implementation 'io.github.rybalkinsd:kohttp:0.11.1'
+    implementation "org.koin:koin-core:2.0.0-rc-2"
+
+    implementation "org.apache.kafka:kafka-clients:2.4.0"
 
     implementation "org.slf4j:slf4j-api:1.7.25"
     implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation "ch.qos.logback:logback-core:1.2.3"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.0"
+    testImplementation "io.mockk:mockk:1.9"
+    testImplementation "org.assertj:assertj-core:3.11.1"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.6.0"
 }
 
 compileKotlin {
@@ -41,13 +66,4 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
-}
-
-kapacity {
-    duration = 20000
-    dataLoader = "com.stuforbes.kapacity.sample.data.SampleDataLoader"
-    timeSeriesDataSorter = "com.stuforbes.kapacity.sample.data.SampleTimeSeriesDataSorter"
-    dataPoster = "com.stuforbes.kapacity.sample.data.KafkaDataPosterImpl"
-    flightRecorder = "com.stuforbes.kapacity.sample.recorder.PrometheusFlightRecorderImpl"
-    resultFormatter = "com.stuforbes.kapacity.recorder.prometheus.PrometheusResultFormatter"
 }

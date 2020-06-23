@@ -122,8 +122,8 @@ internal class PerformanceTestRunnerTest {
             verify(exactly = 0) { clock.stop() }
             verify(exactly = 0) { onComplete() }
             verify {
-                dataPoster.post(aDataPoint(1))
-                dataPoster.post(aDataPoint(2))
+                dataPoster.post("1")
+                dataPoster.post("2")
             }
         }
     }

@@ -4,7 +4,7 @@ import com.stuforbes.kapacity.configuration.intConfig
 import com.stuforbes.kapacity.configuration.longConfig
 import com.stuforbes.kapacity.configuration.longConfigOrNull
 import com.stuforbes.kapacity.data.DataLoader
-import com.stuforbes.kapacity.model.BasicTimeSeriesData
+import com.stuforbes.kapacity.model.TimeSeriesData
 import com.stuforbes.kapacity.model.Scenario
 import com.stuforbes.kapacity.util.Loggable
 import kotlin.random.Random
@@ -39,10 +39,10 @@ class SampleDataLoader(
     override fun loadData(): List<Scenario<Long, Request>> {
         info { "Loading random data with seed $seed" }
         return (1..numberOfScenarios).map { scenarioNum ->
-            Scenario(
+            Scenario<Long, Request>(
                 scenarioNum.toLong(),
                 (1..numberOfMessagesPerScenario).map { messageNum ->
-                    BasicTimeSeriesData<Request>(
+                    TimeSeriesData<Request>(
                         messageNum * delayPerMessageMs,
                         aRandomRequest()
                     )

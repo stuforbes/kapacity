@@ -48,7 +48,7 @@ class KapacityPlugin : Plugin<Project> {
     }
 
     private fun runKapacityTest(project: Project, extension: KapacityPluginExtension, cp: FileCollection) {
-        val kapacityTestTask = project.tasks.create("kapacity", JavaExec::class.java) {
+        val kapacityExecTask = project.tasks.create("kapacityexec", JavaExec::class.java) {
             it.apply {
                 group = JavaBasePlugin.VERIFICATION_GROUP
                 description = "Runs Kapacity tests"
@@ -58,7 +58,7 @@ class KapacityPlugin : Plugin<Project> {
             extension.applyTo(it)
         }
 
-        val testTask = project.tasks.getByName("kapacity")
-        testTask.dependsOn(kapacityTestTask)
+        val kapacityTask = project.tasks.getByName("kapacity")
+        kapacityTask.dependsOn(kapacityExecTask)
     }
 }

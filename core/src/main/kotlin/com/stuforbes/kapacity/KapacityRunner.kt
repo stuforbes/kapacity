@@ -11,8 +11,10 @@
 package com.stuforbes.kapacity
 
 import com.stuforbes.kapacity.data.DataLoader
-import com.stuforbes.kapacity.data.TimeSeriesDataSorter
+import com.stuforbes.kapacity.data.StandardTimeSeriesDataSorter
 import com.stuforbes.kapacity.engine.Engine
+import com.stuforbes.kapacity.recorder.DataPointRecordable
+import com.stuforbes.kapacity.recorder.DataPointRecordingFlightRecorder
 import com.stuforbes.kapacity.recorder.FlightRecorder
 import com.stuforbes.kapacity.result.ResultFormatter
 import com.stuforbes.kapacity.result.ResultPrinter
@@ -29,7 +31,6 @@ object KapacityRunner {
 
     fun <Id, Data, Result> run(
         dataLoader: DataLoader<Id, Data>,
-        dataSorter: TimeSeriesDataSorter<Data>,
         dataPoster: DataPoster<Data>,
         flightRecorder: FlightRecorder<Result>,
         resultPrinter: ResultPrinter<Result>?,
@@ -43,6 +44,13 @@ object KapacityRunner {
             { Clock() },
             dataPoster
         )
+
+        if(DataPointRecordable::class.java.isAssignableFrom(dataPoster::class.java) && DataPointRecordingFlightRecorder::class.java.isAssignableFrom(flightRecorder::class.java)){
+            (dataPoster as DataPointRecordable<Data>).registerDataPointRecorder(flightRecorder as DataPointRecordingFlightRecorder<Data, Result>)
+        }
+
+        val dataSorter = StandardTimeSeriesDataSorter<Data>()
+
         return Engine(dataLoader, dataSorter, performanceTestRunner, flightRecorder, printer)
     }
 }

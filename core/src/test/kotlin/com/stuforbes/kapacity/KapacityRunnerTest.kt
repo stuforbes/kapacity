@@ -11,7 +11,8 @@
 package com.stuforbes.kapacity
 
 import com.stuforbes.kapacity.data.DataLoader
-import com.stuforbes.kapacity.data.TimeSeriesDataSorter
+import com.stuforbes.kapacity.recorder.DataPointRecordable
+import com.stuforbes.kapacity.recorder.DataPointRecordingFlightRecorder
 import com.stuforbes.kapacity.recorder.FlightRecorder
 import com.stuforbes.kapacity.result.ResultFormatter
 import com.stuforbes.kapacity.result.ResultPrinter
@@ -20,6 +21,9 @@ import com.stuforbes.kapacity.test.fieldValueNamed
 import com.stuforbes.kapacity.test.shouldHaveAFieldValueOf
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -28,9 +32,6 @@ internal class KapacityRunnerTest {
 
     @MockK
     private lateinit var dataLoader: DataLoader<Int, String>
-
-    @MockK
-    private lateinit var dataSorter: TimeSeriesDataSorter<String>
 
     @MockK
     private lateinit var flightRecorder: FlightRecorder<String>
@@ -48,7 +49,6 @@ internal class KapacityRunnerTest {
     fun `loads the required services and instantiates an engine`() {
         val engine = KapacityRunner.run(
             dataLoader,
-            dataSorter,
             dataPoster,
             flightRecorder,
             resultPrinter,
@@ -56,7 +56,6 @@ internal class KapacityRunnerTest {
         )
 
         engine.shouldHaveAFieldValueOf("dataLoader", dataLoader)
-        engine.shouldHaveAFieldValueOf("dataSorter", dataSorter)
         engine.shouldHaveAFieldValueOf("flightRecorder", flightRecorder)
         engine.shouldHaveAFieldValueOf("resultPrinter", resultPrinter)
     }
@@ -65,7 +64,6 @@ internal class KapacityRunnerTest {
     fun `if the result printer is null, but there is a result formatter, uses a console printer`() {
         val engine = KapacityRunner.run(
             dataLoader,
-            dataSorter,
             dataPoster,
             flightRecorder,
             null,
@@ -74,5 +72,44 @@ internal class KapacityRunnerTest {
 
         val actualResultPrinter = engine.fieldValueNamed<ResultPrinter<String>>("resultPrinter")
         actualResultPrinter.shouldHaveAFieldValueOf("outputStream", System.out)
+    }
+
+    interface PosterWithRecordable : DataPoster<String>, DataPointRecordable<String>
+
+    @Nested
+    inner class DataPointRecordablePoster {
+
+        @Test
+        fun `registers the data point recorder on the data poster if it is a data point recording flight recorder`() {
+
+            val dataPointRecordablePoster = mockk<PosterWithRecordable>(relaxed = true)
+            val dataPointRecordingFlightRecorder = mockk<DataPointRecordingFlightRecorder<String, String>>()
+
+            KapacityRunner.run(
+                dataLoader,
+                dataPointRecordablePoster,
+                dataPointRecordingFlightRecorder,
+                resultPrinter,
+                null
+            )
+
+            verify { dataPointRecordablePoster.registerDataPointRecorder(dataPointRecordingFlightRecorder) }
+        }
+
+        @Test
+        fun `does not register the data point recorder on the data poster if it is not a data point recording flight recorder`() {
+
+            val dataPointRecordablePoster = mockk<PosterWithRecordable>()
+
+            KapacityRunner.run(
+                dataLoader,
+                dataPointRecordablePoster,
+                flightRecorder,
+                resultPrinter,
+                null
+            )
+
+            verify(exactly = 0) { dataPointRecordablePoster.registerDataPointRecorder(any()) }
+        }
     }
 }

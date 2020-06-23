@@ -12,7 +12,6 @@ package com.stuforbes.kapacity.console
 
 import com.stuforbes.kapacity.KapacityRunner
 import com.stuforbes.kapacity.data.DataLoader
-import com.stuforbes.kapacity.data.TimeSeriesDataSorter
 import com.stuforbes.kapacity.recorder.FlightRecorder
 import com.stuforbes.kapacity.result.ResultFormatter
 import com.stuforbes.kapacity.result.ResultPrinter
@@ -43,7 +42,6 @@ fun main(args: Array<String>) {
     cmd.ifValid {
         KapacityRunner.run<Any, Any, Any>(
             cmd.getOptionValue("dl").instantiate(),
-            cmd.getOptionValue("ds").instantiate(),
             cmd.getOptionValue("dp").instantiate(),
             cmd.getOptionValue("fr").instantiate(),
             cmd.getOptionValue("rp")?.instantiate(),
@@ -55,7 +53,6 @@ fun main(args: Array<String>) {
 private fun buildOptions() = Options().apply {
     addRequiredOption("t", "time", true, "The test duration in ms")
     addRequiredOption("dl", "dataLoader", true, "The implementation of ${DataLoader::class.qualifiedName}")
-    addRequiredOption("ds", "dataSorter", true, "The implementation of ${TimeSeriesDataSorter::class.qualifiedName}")
     addRequiredOption("dp", "dataPoster", true, "The implementation of ${DataPoster::class.qualifiedName}")
     addRequiredOption("fr", "flightRecorder", true, "The implementation of ${FlightRecorder::class.qualifiedName}")
     addOption("rp", "resultPrinter", true, "The implementation of ${ResultPrinter::class.qualifiedName}")

@@ -14,7 +14,6 @@ package com.stuforbes.kapacity.runner.data
 
 import com.stuforbes.kapacity.recorder.DataPointRecorder
 import com.stuforbes.kapacity.recorder.OnCompletion
-import com.stuforbes.kapacity.test.aDataPoint
 import io.github.rybalkinsd.kohttp.dsl.context.BodyContext
 import io.github.rybalkinsd.kohttp.dsl.context.HttpPostContext
 import io.github.rybalkinsd.kohttp.ext.url
@@ -122,7 +121,7 @@ internal class HttpDataPosterTest {
             every { dataPointRecorder.recordDataPoint() } returns onCompletion
             every { response.code() } returns RESPONSE_CODE
 
-            poster.post(data)
+            poster.post(DATA)
             delay(100)
 
             verifyOrder {
@@ -134,7 +133,7 @@ internal class HttpDataPosterTest {
     }
 
     private fun runPost(){
-        poster.post(data)
+        poster.post(DATA)
 
         verify { httpPoster(any()) }
     }
@@ -151,7 +150,7 @@ internal class HttpDataPosterTest {
     private fun checkBodyContextPopulated(bodyContextInit: BodyContext.() -> RequestBody) {
         bodyContext.bodyContextInit()
 
-        verify { bodyContext.json(""""12"""") }
+        verify { bodyContext.json(""""$DATA"""") }
     }
 
     private fun primePostContext(): CapturingSlot<HttpPostContext.() -> Unit> {
@@ -177,6 +176,6 @@ internal class HttpDataPosterTest {
         private const val URL = "http://a-url.com"
         private const val RESPONSE_CODE = 204
 
-        private val data = aDataPoint(12)
+        private const val DATA = "some data"
     }
 }

@@ -10,8 +10,6 @@
 
 package com.stuforbes.kapacity.runner.data
 
-import com.stuforbes.kapacity.test.aDataPoint
-import com.stuforbes.kapacity.test.nextInt
 import com.stuforbes.kapacity.test.nextString
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
@@ -41,9 +39,9 @@ internal class KafkaDataPosterTest {
 
     @Test
     fun `should serialise the data to json and send it via the KafkaProducer`() {
-        val data = aDataPoint(nextInt())
+        val data = "some data"
         kafkaDataPoster.post(data)
 
-        verify { kafkaProducer.send(ProducerRecord(topic, """"${data.data}"""")) }
+        verify { kafkaProducer.send(ProducerRecord(topic, """"$data"""")) }
     }
 }

@@ -13,8 +13,8 @@ services:
     hostname: kafka
     environment:
       KAFKA_CREATE_TOPICS: "ReceiveData:1:1, PostData:1:1" # topic:partition:replicas
-      KAFKA_ADVERTISED_HOST_NAME: kafka # docker-machine ip
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_HOST_NAME: $DOCKERHOST
+      KAFKA_ZOOKEEPER_CONNECT: $DOCKERHOST:2181
       KAFKA_ADVERTISED_PORT: 9092
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -36,3 +36,11 @@ services:
       - ./grafana:/var/lib/grafana
     extra_hosts:
       - "dockerhost:$DOCKERHOST"
+  application:
+    image: "sample-kapacity-application:latest"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "kafka"
+    environment:
+      KAFKA_HOST: "$DOCKERHOST"

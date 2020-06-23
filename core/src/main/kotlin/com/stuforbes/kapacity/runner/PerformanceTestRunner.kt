@@ -64,7 +64,7 @@ class PerformanceTestRunner<T>(
             val itemsToPost = allElapsedDataItems(time, dataProgression)
             debug("About to post ${itemsToPost.size} items")
             itemsToPost.forEach {
-                dataPoster.post(it)
+                dataPoster.post(it.data)
             }
         }
     }

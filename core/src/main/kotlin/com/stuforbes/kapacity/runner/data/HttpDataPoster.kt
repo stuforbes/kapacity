@@ -14,7 +14,6 @@ package com.stuforbes.kapacity.runner.data
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.stuforbes.kapacity.configuration.stringConfig
-import com.stuforbes.kapacity.model.TimeSeriesData
 import com.stuforbes.kapacity.recorder.DataPointRecordable
 import com.stuforbes.kapacity.recorder.DataPointRecorder
 import com.stuforbes.kapacity.util.Loggable
@@ -50,14 +49,14 @@ class HttpDataPoster<T>(
         this.dataPointRecorder = dataPointRecorder
     }
 
-    override fun post(data: TimeSeriesData<T>) {
-        debug { "Sending data ${data.data} via $theUrl" }
+    override fun post(data: T) {
+        debug { "Sending data $data via $theUrl" }
         GlobalScope.launch {
             val onCompletion = dataPointRecorder?.recordDataPoint()
             val response = httpPoster {
                 url(theUrl)
                 body {
-                    json(data.data.asJson())
+                    json(data.asJson())
                 }
             }
 

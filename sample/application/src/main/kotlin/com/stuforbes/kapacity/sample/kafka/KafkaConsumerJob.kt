@@ -53,7 +53,7 @@ class KafkaConsumerJob(
         private fun Long.asMillis() = Duration.ofMillis(this)
 
         private val KAFKA_PROPS = Properties().apply {
-            this[BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
+            this[BOOTSTRAP_SERVERS_CONFIG] = "${System.getenv("KAFKA_HOST")}:9092"
             this[ENABLE_AUTO_COMMIT_CONFIG] = true
             this[GROUP_ID_CONFIG] = "sample-app"
             this[KEY_DESERIALIZER_CLASS_CONFIG] = LongDeserializer::class.java.name

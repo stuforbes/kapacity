@@ -29,7 +29,7 @@ class KafkaProducer(private val topic: String) {
 
     companion object {
         val KAFKA_PROPS = Properties().apply {
-            this[BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
+            this[BOOTSTRAP_SERVERS_CONFIG] = "${System.getenv("KAFKA_HOST")}:9092"
             this[CLIENT_ID_CONFIG] = "sample-app"
             this[KEY_SERIALIZER_CLASS_CONFIG] = LongSerializer::class.java.name
             this[VALUE_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java.name
