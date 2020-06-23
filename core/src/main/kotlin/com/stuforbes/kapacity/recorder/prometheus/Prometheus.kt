@@ -18,6 +18,8 @@ import com.stuforbes.kapacity.configuration.stringConfig
  * Configuration object for Prometheus access
  */
 data class Prometheus(
+    val latencyMetric: String,
+    val resolutionSeconds: Int,
     val protocol: String,
     val host: String,
     val port: Int,
@@ -28,6 +30,8 @@ data class Prometheus(
          * Create a new Prometheus config object from the configuration file
          */
         fun fromConfig() = Prometheus(
+            latencyMetric = "prometheus.latency.metric".stringConfig(),
+            resolutionSeconds = "prometheus.resolution.seconds".intConfig(),
             protocol = if ("prometheus.secure".booleanConfig()) "https"
             else "http",
             host = "prometheus.host".stringConfig(),

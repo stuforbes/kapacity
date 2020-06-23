@@ -24,13 +24,8 @@ import java.time.format.DateTimeFormatter
 
 /**
  * Implementation of FlightRecorder that looks up results in Prometheus
- * @param latencyMetric Which metric in Prometheus to use
- * @param resolutionSeconds The 'step' parameter in the Prometheus call
  */
-open class PrometheusFlightRecorder(
-    private val latencyMetric: String,
-    private val resolutionSeconds: Int
-) : FlightRecorder<PrometheusResult> {
+class PrometheusFlightRecorder : FlightRecorder<PrometheusResult> {
 
     private val prometheus = fromConfig()
 

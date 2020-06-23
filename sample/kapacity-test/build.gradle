@@ -51,7 +51,7 @@ kapacity {
     duration = 20000
     dataLoader = "com.stuforbes.kapacity.sample.data.SampleDataLoader"
     timeSeriesDataSorter = "com.stuforbes.kapacity.data.StandardTimeSeriesDataSorter"
-    dataPoster = "com.stuforbes.kapacity.sample.data.KafkaDataPosterImpl"
+    dataPoster = "com.stuforbes.kapacity.runner.data.KafkaDataPoster"
     flightRecorder = "com.stuforbes.kapacity.sample.recorder.PrometheusFlightRecorderImpl"
     resultFormatter = "com.stuforbes.kapacity.recorder.prometheus.PrometheusResultFormatter"
 }

@@ -34,7 +34,7 @@ internal class KafkaDataPosterTest {
     fun before() {
         this.topic = nextString()
 
-        this.kafkaDataPoster = object : KafkaDataPoster<String>(topic, kafkaProducer){}
+        this.kafkaDataPoster = KafkaDataPoster(topic, kafkaProducer)
     }
 
     @Test

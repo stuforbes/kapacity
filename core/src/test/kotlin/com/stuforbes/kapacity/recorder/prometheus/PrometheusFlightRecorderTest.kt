@@ -43,10 +43,7 @@ internal class PrometheusFlightRecorderTest {
 
     @BeforeEach
     fun before() {
-        this.flightRecorder = PrometheusFlightRecorder(
-            LATENCY_METRIC,
-            RESOLUTION_SECONDS
-        )
+        this.flightRecorder = PrometheusFlightRecorder()
 
         mockkStatic("io.github.rybalkinsd.kohttp.dsl.HttpGetDslKt")
         every { httpGet(any(), any()) } returns response
@@ -84,10 +81,10 @@ internal class PrometheusFlightRecorderTest {
             urlSlot.captured shouldEqual
                     "http://prometheus:9090" +
                     "/api/v1/query_range" +
-                    "?query=a.metric.name" +
+                    "?query=a_latency" +
                     "&start=2020-03-28T14:08:10Z" +
                     "&end=2020-03-28T15:08:10Z" +
-                    "&step=100s"
+                    "&step=5s"
         }
     }
 
@@ -109,9 +106,6 @@ internal class PrometheusFlightRecorderTest {
     }
 
     companion object {
-        private const val LATENCY_METRIC = "a.metric.name"
-        private const val RESOLUTION_SECONDS = 100
-
         private const val START_TIME = 1585404490000L
         private const val END_TIME = START_TIME + 3_600_000L
 
