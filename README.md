@@ -55,6 +55,7 @@ application for a duration of 20 seconds, and print the results to the console.
 
 The test execution is configured in the build.gradle file as follows:
 
+
 `
 kapacity {
     duration = 20000
