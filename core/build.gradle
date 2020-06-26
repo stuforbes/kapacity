@@ -87,9 +87,3 @@ publishing {
         }
     }
 }
-
-release {
-    versionPatterns = [
-            /(\d+)\.(\d+)\.(\d)$/: { Matcher m, Project p -> println("here") && m.replaceAll("${m[0][1]}.${(m[0][2] as int) +1}.${m[0][3]}") }
-    ]
-}
