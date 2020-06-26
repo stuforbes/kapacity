@@ -33,15 +33,12 @@ buildscript {
         mavenLocal()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
-    dependencies {
-        classpath 'net.researchgate:gradle-release:2.8.1'
-    }
 }
 
 plugins {
     id 'kotlin'
     id 'maven-publish'
-    id 'net.researchgate.release' version '2.8.1'
+    id 'pl.allegro.tech.build.axion-release' version '1.12.0'
 }
 
 repositories {
