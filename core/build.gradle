@@ -12,6 +12,10 @@ import java.util.regex.Matcher
 
 buildscript {
 
+    dependencies {
+        classpath 'org.ajoberstar:grgit:1.4.+'
+    }
+
     ext {
         kotlinVersion = "1.3.61"
         koHttpVersion = "0.11.1"
@@ -38,6 +42,7 @@ buildscript {
 plugins {
     id 'kotlin'
     id 'maven-publish'
+    id 'signing'
 }
 
 repositories {
@@ -76,10 +81,143 @@ test {
     useJUnitPlatform()
 }
 
+task sourceJar(type: Jar) {
+    classifier "sources"
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier "javadoc"
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourceJar
+    archives javadocJar
+}
+
+signing {
+    sign configurations.archives
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            customizePom(pom)
+            groupId 'com.stuforbes'
+            artifactId 'kapacity-core'
+            version "${getVersion()}"
+
             from components.java
+
+            // create the sign pom artifact
+            pom.withXml {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                artifact(pomAscFile) {
+                    classifier = null
+                    extension = 'pom.asc'
+                }
+            }
+
+            artifact(sourceJar) {
+                classifier = 'sources'
+            }
+            artifact(javadocJar) {
+                classifier = 'javadoc'
+            }
+
+            // create the signed artifacts
+            project.tasks.signArchives.signatureFiles.each {
+                artifact(it) {
+                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+                    if (matcher.find()) {
+                        classifier = matcher.group(1)
+                    } else {
+                        classifier = null
+                    }
+                    extension = 'jar.asc'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username "$System.env.OSSRH_USERNAME"
+                password "$System.env.OSSRH_PASSWORD"
+            }
+        }
+    }
+}
+
+model {
+    tasks.generatePomFileForMavenJavaPublication {
+        destination = file("$buildDir/generated-pom.xml")
+    }
+    tasks.publishMavenJavaPublicationToMavenLocal {
+        dependsOn project.tasks.signArchives
+    }
+    tasks.publishMavenJavaPublicationToMavenRepository {
+        dependsOn project.tasks.signArchives
+    }
+}
+
+static def getVersion(){
+    def git = org.ajoberstar.grgit.Grgit.open()
+    def tags = git.tag.list()
+
+    if(tags.isEmpty() == 0){
+        "1.0.0"
+    } else {
+        git.tag.list().last().getName().substring(8)
+    }
+}
+
+def customizePom(pom) {
+    pom.withXml {
+        def root = asNode()
+
+        // eliminate test-scoped dependencies (no need in maven central POMs)
+        root.dependencies.removeAll { dep ->
+            dep.scope == "test"
+        }
+
+        // add all items necessary for maven central publication
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
+
+            description 'Core library for the Kapacity framework'
+            name 'Kapacity Core'
+            url 'https://github.com/stuforbes/kapacity'
+            organization {
+                name 'com.stuforbes'
+                url 'https://github.com/stuforbes'
+            }
+            issueManagement {
+                system 'GitHub'
+                url 'https://github.com/stuforbres/kapacity/issues'
+            }
+            licenses {
+                license {
+                    name 'MIT License'
+                    url 'https://github.com/stuforbes/kapacity/blob/master/LICENSE'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                url 'https://github.com/stuforbes/kapacity'
+                connection 'scm:git:git://github.com/stuforbes/kapacity.git'
+                developerConnection 'scm:git:ssh://git@github.com:stuforbes/kapacity.git'
+            }
+            developers {
+                developer {
+                    name 'Stu Forbes'
+                }
+            }
         }
     }
 }
