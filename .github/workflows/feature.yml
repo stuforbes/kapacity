@@ -1,6 +1,9 @@
-name: Kapacity CI
+name: Kapacity feature branch test
 
-on: [push]
+on:
+    push:
+      branches-exclude:
+        - master
 
 jobs:
   build:
@@ -19,4 +22,4 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean test
