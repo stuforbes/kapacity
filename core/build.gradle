@@ -13,7 +13,7 @@ import java.util.regex.Matcher
 buildscript {
 
     dependencies {
-        classpath 'org.ajoberstar:grgit:1.4.+'
+        classpath 'org.ajoberstar.grgit:grgit-gradle:3.1.1'
     }
 
     ext {
@@ -166,14 +166,16 @@ model {
     }
 }
 
-static def getVersion(){
+static def getVersion() {
     def git = org.ajoberstar.grgit.Grgit.open()
     def tags = git.tag.list()
 
-    if(tags.isEmpty()){
+    if (tags.isEmpty()) {
         "1.0.0"
     } else {
-        tags.last().getName().substring(8)
+        tags
+                .collect { it.getName().substring(8) }
+                .last()
     }
 }
 
