@@ -1,9 +1,9 @@
 name: Kapacity feature branch test
 
 on:
-    push:
-      branches-exclude:
-        - master
+  push:
+    branches-ignore:
+      - master
 
 jobs:
   build:
