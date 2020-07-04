@@ -38,8 +38,8 @@ jobs:
         run: |
           echo "$GPG_PRIV_KEY" > secring.text
           gpg --allow-secret-key-import --import --batch secring.text
-          echo ossrhUsername=${OSSRH_USERNAME} >> gradle.properties
-          echo "ossrhPassword=${OSSRH_PASSWORD}" >> gradle.properties
-          echo "signing.keyId=${SIGNING_KEY_ID}" >> gradle.properties
-          echo "signing.password=${SIGNING_PASSWORD}" >> gradle.properties
+          echo "nexusUsername=$OSSRH_USERNAME" >> gradle.properties
+          echo "nexusPassword=$OSSRH_PASSWORD" >> gradle.properties
+          echo "signing.keyId=$SIGNING_KEY_ID" >> gradle.properties
+          echo "signing.password=$SIGNING_PASSWORD" >> gradle.properties
           ./gradlew clean test release --no-daemon
