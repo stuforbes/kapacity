@@ -47,7 +47,6 @@ plugins {
 }
 
 group 'com.stuforbes.kapacity'
-name 'kapacity-core'
 
 repositories {
     mavenLocal()
