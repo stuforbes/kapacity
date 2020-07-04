@@ -18,3 +18,8 @@ build.properties
 package-lock.json
 
 grafana.db
+
+# These 2 files are updated as part of the release process on Github. If they aren't ignored, the release plugin
+# will fail due to uncommitted changes
+secring.text
+gradle.properties
