@@ -46,6 +46,9 @@ plugins {
     id 'net.researchgate.release' version '2.8.1'
 }
 
+group 'com.stuforbes.kapacity'
+name 'kapacity-core'
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -94,6 +97,10 @@ task sourceJar(type: Jar) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier "javadoc"
     from javadoc.destinationDir
+}
+
+release {
+    versionPropertyFile = 'version.properties'
 }
 
 artifacts {
