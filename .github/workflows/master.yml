@@ -44,4 +44,5 @@ jobs:
           echo "signing.password=$SIGNING_PASSWORD" >> ~/.gradle/gradle.properties
           echo "signing.secretKeyRingFile=$(pwd)/secring.gpg" >> ~/.gradle/gradle.properties
           ./gradlew clean test release --no-daemon --stacktrace
+          rm ~/.gradle/gradle.properties
           rm ./secring.gpg
