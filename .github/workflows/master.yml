@@ -29,7 +29,7 @@ jobs:
           GIT_COMMITTER_NAME: "Github Action"
           GIT_AUTHOR_EMAIL: "action@github.com"
           GIT_COMMITTER_EMAIL: "action@github.com"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_ACCESS_GITHUB_TOKEN }}
           GPG_PRIV_KEY: ${{ secrets.GPG_PRIV_KEY }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
