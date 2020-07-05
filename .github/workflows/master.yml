@@ -45,4 +45,3 @@ jobs:
           echo "signing.secretKeyRingFile=$(pwd)/secring.gpg" >> ~/.gradle/gradle.properties
           ./gradlew clean test release --no-daemon --stacktrace
           rm ./secring.gpg
-          rm ./gradle.properties
