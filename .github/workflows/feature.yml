@@ -22,4 +22,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
-        run: ./gradlew clean test
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        run: |
+          echo "ossrhUsername=$OSSRH_USERNAME" > ~/.gradle/gradle.properties
+          echo "ossrhPassword=$OSSRH_PASSWORD" >> ~/.gradle/gradle.properties
+          ./gradlew clean test
