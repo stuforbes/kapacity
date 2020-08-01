@@ -100,13 +100,8 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 
 task setPublishVersion {
     doLast {
-        println("V2: ${getVersion()}")
         publishing.publications.mavenJava.version = getVersion()
     }
-}
-
-task publishLight(type: GradleBuild) {
-    tasks = ['setPublishVersion', 'publish']
 }
 
 task buildAndPublish(type: GradleBuild) {
