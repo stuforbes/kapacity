@@ -98,8 +98,19 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+task setPublishVersion {
+    doLast {
+        println("V2: ${getVersion()}")
+        publishing.publications.mavenJava.version = project.version
+    }
+}
+
+task publishLight(type: GradleBuild) {
+    tasks = ['setPublishVersion', 'publish']
+}
+
 task buildAndPublish(type: GradleBuild) {
-    tasks = ['clean', 'test', 'release', 'publish']
+    tasks = ['clean', 'test', 'release', 'setPublishVersion', 'publish']
 }
 
 release {
@@ -127,7 +138,6 @@ publishing {
 
             // create the sign pom artifact
             pom.withXml {
-                println("V: ${getVersion()}")
                 def pomFile = file("${project.buildDir}/generated-pom.xml")
                 writeTo(pomFile)
                 def pomAscFile = signing.sign(pomFile).signatureFiles[0]
