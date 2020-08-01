@@ -46,6 +46,6 @@ jobs:
           echo "signing.password=$SIGNING_PASSWORD" >> ~/.gradle/gradle.properties
           echo "signing.secretKeyRingFile=$(pwd)/secring.gpg" >> ~/.gradle/gradle.properties
           echo "githubToken=$GITHUB_TOKEN" >> ~/.gradle/gradle.properties
-          ./gradlew version
+          ./gradlew buildAndPublish
           rm ~/.gradle/gradle.properties
           rm ./secring.gpg

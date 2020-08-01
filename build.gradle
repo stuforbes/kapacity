@@ -180,10 +180,6 @@ model {
     }
 }
 
-task version(type: GradleBuild) {
-    println("V: ${getVersion()}")
-}
-
 def getVersion() {
     def props = new Properties()
     file("version.properties").withInputStream { props.load(it) }
