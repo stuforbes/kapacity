@@ -101,7 +101,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 task setPublishVersion {
     doLast {
         println("V2: ${getVersion()}")
-        publishing.publications.mavenJava.version = project.version
+        publishing.publications.mavenJava.version = getVersion()
     }
 }
 
