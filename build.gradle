@@ -121,7 +121,6 @@ publishing {
             customizePom(pom)
             groupId 'com.stuforbes.kapacity'
             artifactId 'kapacity-core'
-            version "${getVersion()}"
 
             from components.java
 
