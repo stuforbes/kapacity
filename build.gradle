@@ -182,6 +182,7 @@ model {
 }
 
 def getVersion() {
+    println("path: ${file(".").absolutePath}")
     def props = new Properties()
     file("version.properties").withInputStream { props.load(it) }
     props.getProperty("version").replace("-SNAPSHOT", "")
