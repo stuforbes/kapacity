@@ -180,10 +180,14 @@ model {
     }
 }
 
+task version(type: GradleBuild) {
+    println("V: ${getVersion()}")
+}
+
 def getVersion() {
     def props = new Properties()
     file("version.properties").withInputStream { props.load(it) }
-    props.getProperty("version")
+    props.getProperty("version").replace("-SNAPSHOT", "")
 }
 
 def customizePom(pom) {
