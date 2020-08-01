@@ -195,6 +195,7 @@ def customizePom(pom) {
             dep.scope == "test"
         }
 
+
         // add all items necessary for maven central publication
         root.children().last() + {
             resolveStrategy = Closure.DELEGATE_FIRST
