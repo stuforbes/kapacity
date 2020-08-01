@@ -133,9 +133,9 @@ internal class HttpDataPosterTest {
         }
     }
 
-    private fun runPost(){
+    private fun runPost() = runBlocking {
         poster.post(DATA)
-
+        delay(100)
         verify { httpPoster(any()) }
     }
 
