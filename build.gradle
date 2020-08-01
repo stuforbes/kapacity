@@ -181,16 +181,9 @@ model {
 }
 
 static def getVersion() {
-    def git = org.ajoberstar.grgit.Grgit.open()
-    def tags = git.tag.list()
-
-    if (tags.isEmpty()) {
-        "1.0.0"
-    } else {
-        tags
-                .collect { it.getName() }
-                .last()
-    }
+    def props = new Properties()
+    file("version.properties").withInputStream { props.load(it) }
+    props.getProperty("version")
 }
 
 def customizePom(pom) {
