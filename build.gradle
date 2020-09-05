@@ -123,45 +123,33 @@ signing {
     sign configurations.archives
 }
 
+tasks.withType(GenerateMavenPom) {
+    signArchives.dependsOn it
+    signArchives.sign it.outputs.files.singleFile
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            from components.java
+
             customizePom(pom)
             groupId = 'com.stuforbes.kapacity'
             artifactId = 'kapacity-core'
             version = version
 
-            from components.java
+            artifact javadocJar
+            artifact sourcesJar
 
-            // create the sign pom artifact
-            pom.withXml {
-                def pomFile = file("${project.buildDir}/generated-pom.xml")
-                writeTo(pomFile)
-                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-                artifact(pomAscFile) {
-                    classifier = null
-                    extension = 'pom.asc'
+            signArchives.signatures.each { signature ->
+                artifact(signature) {
+                    extension signature.type
                 }
             }
 
-            artifact(sourceJar) {
-                classifier = 'sources'
-            }
-            artifact(javadocJar) {
-                classifier = 'javadoc'
-            }
-
-            // create the signed artifacts
-            project.tasks.signArchives.signatureFiles.each {
-                artifact(it) {
-                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
-                    if (matcher.find()) {
-                        classifier = matcher.group(1)
-                    } else {
-                        classifier = null
-                    }
-                    extension = 'jar.asc'
-                }
+            artifact(file("$buildDir/publications/$publication.name/pom-default.xml.asc")) {
+                extension 'pom.asc'
+                builtBy signArchives
             }
 
             pom {
