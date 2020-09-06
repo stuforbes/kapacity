@@ -113,6 +113,7 @@ publishing {
                 packaging = "jar"
                 name.set("Kapacity Core")
                 url.set("https://github.com/stuforbes/kapacity-core")
+                description.set("Core library for the Kapacity framework")
 
                 organization {
                     name.set("com.stuforbes")
