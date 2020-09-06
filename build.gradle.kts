@@ -85,17 +85,8 @@ tasks.register("setPublishVersion") {
     }
 }
 
-tasks.register("doRelease") {
-    dependsOn("release", "setPublishVersion")
-}
-
-tasks.register("doPublish") {
-    mustRunAfter("doRelease")
-    dependsOn("publish")
-}
-
 tasks.register("buildAndPublish", GradleBuild::class.java) {
-    tasks = listOf("test", "doRelease", "doPublish")
+    tasks = listOf("test", "release", "setPublishVersion", "publish")
 }
 
 release {
