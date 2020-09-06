@@ -154,16 +154,3 @@ fun getVersion(): String {
     props.load(file("version.properties").inputStream())
     return props.getProperty("version").replace("-SNAPSHOT", "")
 }
-
-gradle.taskGraph.whenReady {
-    val hasRootReleaseTask = hasTask(":release")
-
-    if(hasRootReleaseTask) {
-        allTasks.forEach { task ->
-            val subReleaseTask = (task.path.endsWith(":release"))
-            if(subReleaseTask){
-                task.enabled = false
-            }
-        }
-    }
-}
