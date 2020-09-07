@@ -78,7 +78,7 @@ tasks.test {
 }
 
 tasks.register("buildAndPublish", GradleBuild::class.java) {
-    tasks = listOf("test", "release", "setPublishVersion", "uploadArchives")
+    tasks = listOf("test", "release", "uploadArchives")
 }
 
 release {
