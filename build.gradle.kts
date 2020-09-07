@@ -21,16 +21,20 @@ buildscript {
         mavenCentral()
         jcenter()
     }
+    dependencies {
+        classpath("com.vanniktech:gradle-maven-publish-plugin:0.12.0")
+    }
 }
 
 plugins {
-    `java-library`
-    `maven-publish`
+    `java`
     signing
     kotlin("jvm") version DependencyVersions.KOTLIN_VERSION
     id("net.researchgate.release") version DependencyVersions.RELEASE_PLUGIN_VERSION
     id("com.dorongold.task-tree") version "1.5"
 }
+
+apply(plugin = "com.vanniktech.maven.publish")
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 val compileTestKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
@@ -74,79 +78,18 @@ tasks.test {
     useJUnitPlatform()
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
 tasks.register("setPublishVersion") {
     doLast {
-        (publishing.publications["mavenJava"] as MavenPublication).version = getVersion()
+        project.setProperty("VERSION_NAME", getVersion())
     }
 }
 
 tasks.register("buildAndPublish", GradleBuild::class.java) {
-    tasks = listOf("test", "release", "setPublishVersion", "publish")
+    tasks = listOf("test", "release", "setPublishVersion", "uploadArchives")
 }
 
 release {
     versionPropertyFile = "version.properties"
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            artifactId = "kapacity-core"
-            version = version
-            from(components["java"])
-
-            pom {
-                packaging = "jar"
-                name.set("Kapacity Core")
-                url.set("https://github.com/stuforbes/kapacity-core")
-                description.set("Core library for the Kapacity framework")
-
-                organization {
-                    name.set("com.stuforbes")
-                    url.set("https://github.com/stuforbes")
-                }
-                issueManagement {
-                    system.set("GitHub")
-                    url.set("https://github.com/stuforbes/kapacity-core/issues")
-                }
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://github.com/stuforbes/kapacity-core/blob/master/LICENSE")
-                        distribution.set("repo")
-                    }
-                }
-                scm {
-                    url.set("https://github.com/stuforbes/kapacity-core")
-                    connection.set("scm:git:git://github.com/stuforbes/kapacity-core.git")
-                    developerConnection.set("scm:git:ssh://git@github.com:stuforbes/kapacity-core.git")
-                }
-                developers {
-                    developer {
-                        name.set("Stu Forbes")
-                    }
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-            credentials {
-                username = ossrhUsername
-                password = ossrhPassword
-            }
-        }
-    }
-}
-
-signing {
-    sign(publishing.publications["mavenJava"])
 }
 
 fun getVersion(): String {
