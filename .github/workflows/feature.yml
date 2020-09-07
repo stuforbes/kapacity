@@ -27,9 +27,9 @@ jobs:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         run: |
           mkdir -p ~/.gradle
-          touch ~/.gradle/gradle.properties
-          echo "ossrhUsername=$OSSRH_USERNAME" > ~/.gradle/gradle.properties
-          echo "ossrhPassword=$OSSRH_PASSWORD" >> ~/.gradle/gradle.properties
+          cp ./publish.properties ~/.gradle/gradle.properties
+          echo "SONATYPE_NEXUS_USERNAME=$OSSRH_USERNAME" >> ~/.gradle/gradle.properties
+          echo "SONATYPE_NEXUS_PASSWORD=$OSSRH_PASSWORD" >> ~/.gradle/gradle.properties
           ./gradlew clean test
       - name: Publish Test Report
         if: ${{ always() }}
