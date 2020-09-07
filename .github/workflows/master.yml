@@ -37,11 +37,11 @@ jobs:
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: |
           mkdir -p ~/.gradle
-          cp ./gradle.properties ~/.gradle/gradle.properties
+          cp ./publish.properties ~/.gradle/gradle.properties
           echo "$GPG_PRIV_KEY" | base64 -d > secring.gpg
           gpg --allow-secret-key-import --import --batch secring.gpg
-          echo "ossrhUsername=$OSSRH_USERNAME" >> ~/.gradle/gradle.properties
-          echo "ossrhPassword=$OSSRH_PASSWORD" >> ~/.gradle/gradle.properties
+          echo "SONATYPE_NEXUS_USERNAME=$OSSRH_USERNAME" >> ~/.gradle/gradle.properties
+          echo "SONATYPE_NEXUS_PASSWORD=$OSSRH_PASSWORD" >> ~/.gradle/gradle.properties
           echo "signing.keyId=$SIGNING_KEY_ID" >> ~/.gradle/gradle.properties
           echo "signing.password=$SIGNING_PASSWORD" >> ~/.gradle/gradle.properties
           echo "signing.secretKeyRingFile=$(pwd)/secring.gpg" >> ~/.gradle/gradle.properties
