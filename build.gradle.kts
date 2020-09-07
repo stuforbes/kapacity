@@ -12,9 +12,6 @@ import DependencyVersions.SLF4J_VERSION
 
 import java.util.Properties
 
-val ossrhUsername: String by project
-val ossrhPassword: String by project
-
 buildscript {
     repositories {
         mavenLocal()
@@ -33,6 +30,8 @@ plugins {
     id("net.researchgate.release") version DependencyVersions.RELEASE_PLUGIN_VERSION
     id("com.dorongold.task-tree") version "1.5"
 }
+
+project.setProperty("VERSION_NAME", getVersion())
 
 apply(plugin = "com.vanniktech.maven.publish")
 
@@ -76,12 +75,6 @@ compileTestKotlin.kotlinOptions {
 
 tasks.test {
     useJUnitPlatform()
-}
-
-tasks.register("setPublishVersion") {
-    doLast {
-        project.setProperty("VERSION_NAME", getVersion())
-    }
 }
 
 tasks.register("buildAndPublish", GradleBuild::class.java) {
