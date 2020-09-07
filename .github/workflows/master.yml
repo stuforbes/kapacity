@@ -37,7 +37,7 @@ jobs:
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: |
           mkdir -p ~/.gradle
-          touch ~/.gradle/gradle.properties
+          cp ./publish.properties ~/.gradle/gradle.properties
           echo "$GPG_PRIV_KEY" | base64 -d > secring.gpg
           gpg --allow-secret-key-import --import --batch secring.gpg
           echo "ossrhUsername=$OSSRH_USERNAME" >> ~/.gradle/gradle.properties
